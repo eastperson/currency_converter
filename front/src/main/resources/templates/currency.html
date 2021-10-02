@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <form action="http://localhost:8080/currency/convert" method="get">
+        <h2>환율 계산</h2>
+        <span>송금국가: 미국(USD)</span><br/>
+        <span>수취국가:
+            <select name="type">
+                <option value="KRW">한국(KRW)</option>
+                <option value="JPY">일본(JPY)</option>
+                <option value="PHP">필리핀(PHP)</option>
+            </select>
+        </span><br/>
+        <span>환율: <span id="currency"></span></span><br/>
+        <span>송금액: <input type="text" name="amount">  USD</span><br/>
+        <button type="submit">Submit</button>
+    </form>
+    <script>
+        let httpRequest = new XMLHttpRequest();
+        httpRequest.open('GET','http://localhost:8080/currency/current',true);
+        httpRequest.send(null);
+        httpRequest.setRequestHeader('X-PINGOTHER', 'pingpong');
+        httpRequest.setRequestHeader('Content-Type', 'application/xml');
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                try {
+                    let obj = JSON.parse(httpRequest.responseText);
+                    console.log(obj)
+
+
+                } catch (error) {
+                    throw Error;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 package com.wirebarley.api.service;
 
-import com.wirebarley.api.component.currency_layer.client.CurrencyLayerClient;
-import com.wirebarley.api.component.currency_layer.domain.CurrencyLayerResponse;
-import com.wirebarley.api.component.currency_layer.domain.CurrencyType;
+import com.wirebarley.core.component.currency_layer.client.CurrencyLayerClient;
+import com.wirebarley.core.component.currency_layer.domain.CurrencyLayerResponse;
+import com.wirebarley.core.component.currency_layer.domain.CurrencyType;
 import com.wirebarley.api.exception.CurrencyLayerClientException;
 import com.wirebarley.api.model.ConvertedResultView;
 import com.wirebarley.api.model.CurrencyConvertRequest;
@@ -54,19 +54,6 @@ public class CurrencyConvertService {
         }
     }
 
-    /**
-     * currency를 가변인자로 받아 하나의 문자열로 파싱
-     * @param currencies
-     * @return
-     */
-    private String parseCurrencies(String... currencies) {
-        StringBuilder paredCurrencies = new StringBuilder();
-        for(String str : currencies){
-            paredCurrencies.append(",").append(str);
-        }
-        return paredCurrencies.toString();
-    }
-
     public ConvertedResultView currencyConvert(CurrencyConvertRequest currencyConvertRequest) {
         CompletableFuture<CurrencyLayerResponse> future = currentCurrencyAsync();
         while(!future.isDone()){
@@ -90,5 +77,18 @@ public class CurrencyConvertService {
         } catch (InterruptedException | ExecutionException e) {
             throw new CurrencyLayerClientException(ResponseCode.INTERNAL_ERROR,"",HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * currency를 가변인자로 받아 하나의 문자열로 파싱
+     * @param currencies
+     * @return
+     */
+    private String parseCurrencies(String... currencies) {
+        StringBuilder paredCurrencies = new StringBuilder();
+        for(String str : currencies){
+            paredCurrencies.append(",").append(str);
+        }
+        return paredCurrencies.toString();
     }
 }
