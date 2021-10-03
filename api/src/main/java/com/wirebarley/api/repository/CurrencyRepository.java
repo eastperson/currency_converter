@@ -1,4 +1,4 @@
-package com.wirebarley.core.repository;
+package com.wirebarley.api.repository;
 
 import com.wirebarley.core.entity.CurrencyEntity;
 import org.springframework.data.repository.CrudRepository;

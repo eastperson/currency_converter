@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = ApiApplication.class)
 @AutoConfigureMockMvc
 @WebAppConfiguration
-public class CurrencyConvertRestTests {
+public class CurrencyEntityConvertRestTests {
 
 
     @Autowired MockMvc mockMvc;
