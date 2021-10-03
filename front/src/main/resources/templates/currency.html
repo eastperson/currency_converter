@@ -40,8 +40,8 @@
         };
 
         let getSelect = function (currencyData){
-            let key = "USD"+selectBox.value;
-            currency.textContent = currencyData.quotes[key];
+            let key = selectBox.value;
+            currency.textContent = parseFloat(currencyData.quotes["USD"+key]).toLocaleString(undefined, {minimumFractionDigits: 2}) + " " + key + "/USD";
         };
 
         let currencyConvert = async function(){
