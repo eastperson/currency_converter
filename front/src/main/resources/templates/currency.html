@@ -39,11 +39,12 @@
             return JSON.parse(await response.text());
         };
 
-        let getSelect = function (currencyData){
+        let getSelect = function (){
             let key = selectBox.value;
             currency.textContent = parseFloat(currencyData.quotes["USD"+key]).toLocaleString(undefined, {minimumFractionDigits: 2}) + " " + key + "/USD";
         };
 
+        /**
         let currencyConvert = async function(){
             let type = selectBox.value;
             let amount = amountInput.value;
@@ -57,18 +58,15 @@
             });
             return JSON.parse(await response.text());
         }
+         **/
 
-        let currencyConvertHandler = async e =>{
-            e.preventDefault();
+        let currencyConvert = function() {
             if(!validate()) return;
-            let response = await currencyConvert();
-            if(response.code === '__BAD_REQUEST__' || response.code === '__INTERNAL_ERROR__') {
-                convertedAmount.textContent = response.msg;
-                convertedAmount.style.color = "red"
-            } else {
-                convertedAmount.textContent = response.formattedConvertedAmount + ' ' + selectBox.value;
-                convertedAmount.style.color = "black"
-            }
+            let type = selectBox.value;
+            let amount = amountInput.value;
+            let rate = currencyData.quotes["USD"+type];
+            let result = rate * amount;
+            convertedAmount.textContent = parseFloat(result).toLocaleString(undefined, {minimumFractionDigits: 2}) + " " + type + "/USD";
         };
 
         let validate = function (){
@@ -88,8 +86,17 @@
           currencyData = await getCurrency();
           getSelect(currencyData);
           selectBox.addEventListener('change',e => getSelect(currencyData));
-          submitButton.addEventListener('click',currencyConvertHandler)
+          submitButton.addEventListener('click', e => {
+              e.preventDefault();
+              currencyConvert();
+          });
           amountInput.addEventListener('change', e => validate());
+          setInterval(async () => {
+              currencyData = await getCurrency();
+              console.log(currencyData);
+              getSelect();
+              currencyConvert();
+          },60000);
         };
 
         init();
