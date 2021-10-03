@@ -32,6 +32,7 @@ subprojects {
         annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
         annotationProcessor 'org.projectlombok:lombok'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
         /** Retrofit2 */
         implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
@@ -52,7 +53,6 @@ project(':front') {
     dependencies {
         implementation project(':core')
         implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 }
 
