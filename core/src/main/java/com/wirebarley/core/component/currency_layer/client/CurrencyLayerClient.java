@@ -1,8 +1,8 @@
-package com.wirebarley.api.component.currency_layer.client;
+package com.wirebarley.core.component.currency_layer.client;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wirebarley.api.component.currency_layer.service.CurrencyLayerService;
+import com.wirebarley.core.component.currency_layer.service.CurrencyLayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import retrofit2.Retrofit;

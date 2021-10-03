@@ -1,6 +1,6 @@
-package com.wirebarley.api.component.currency_layer.service;
+package com.wirebarley.core.component.currency_layer.service;
 
-import com.wirebarley.api.component.currency_layer.domain.CurrencyLayerResponse;
+import com.wirebarley.core.component.currency_layer.domain.CurrencyLayerResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

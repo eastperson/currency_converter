@@ -59,5 +59,6 @@ project(':front') {
 project(':api') {
     dependencies {
         implementation project(':core')
+        implementation 'javax.validation:validation-api:2.0.1.Final'
     }
 }

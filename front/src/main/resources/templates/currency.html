@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <form action="http://localhost:8080/currency/convert" method="get">
+        <h2>환율 계산</h2>
+        <span>송금국가: 미국(USD)</span><br/>
+        <span>수취국가:
+            <select id="currencyType" name="type">
+                <option value="KRW">한국(KRW)</option>
+                <option value="JPY">일본(JPY)</option>
+                <option value="PHP">필리핀(PHP)</option>
+            </select>
+        </span><br/>
+        <span>환율: <span id="currency"></span></span><br/>
+        <span>송금액: <input type="text" id="amount" name="amount">  USD </span><span id="validate"></span><br/>
+        <button type="submit" id="button">Submit</button>
+        <h2 id="convertedAmount"></h2>
+    </form>
+    <script th:inline="javascript">
+        const host = [[${host}]];
+        console.log(host);
+        let currencyData;
+        const currency = document.querySelector("#currency");
+        const selectBox = document.querySelector("#currencyType");
+        const amountInput = document.querySelector("#amount");
+        const submitButton = document.querySelector("#button");
+        const convertedAmount = document.querySelector("#convertedAmount");
+        const validateMsg = document.querySelector("#validate");
+
+        let getCurrency = async function (){
+            let response = await fetch(host + '/currency/current', {
+                method: 'GET'
+            });
+            return JSON.parse(await response.text());
+        };
+
+        let getSelect = function (currencyData){
+            let key = "USD"+selectBox.value;
+            currency.textContent = currencyData.quotes[key];
+        };
+
+        let currencyConvert = async function(){
+            let type = selectBox.value;
+            let amount = amountInput.value;
+            let params = {amount : amount,type : type};
+
+            let query = Object.keys(params) .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k])) .join('&');
+            let url = host + '/currency/convert?' + query;
+
+            let response = await fetch(url, {
+                method: 'GET'
+            });
+            return JSON.parse(await response.text());
+        }
+
+        let currencyConvertHandler = async e =>{
+            e.preventDefault();
+            if(!validate()) return;
+            let response = await currencyConvert();
+            if(response.code === '__BAD_REQUEST__' || response.code === '__INTERNAL_ERROR__') {
+                convertedAmount.textContent = response.msg;
+                convertedAmount.style.color = "red"
+            } else {
+                convertedAmount.textContent = response.formattedConvertedAmount + ' ' + selectBox.value;
+                convertedAmount.style.color = "black"
+            }
+        };
+
+        let validate = function (){
+            const parsed = parseInt(amountInput.value);
+            if (isNaN(parsed) || parsed < 0 || parsed > 10000){
+                validateMsg.textContent = '송금액이 바르지 않습니다';
+                validateMsg.style.color = 'red';
+                return false;
+            } else {
+                validateMsg.textContent = '✔';
+                validateMsg.style.color = 'green';
+                return true;
+            }
+        }
+
+        let init = async function (){
+          currencyData = await getCurrency();
+          getSelect(currencyData);
+          selectBox.addEventListener('change',e => getSelect(currencyData));
+          submitButton.addEventListener('click',currencyConvertHandler)
+          amountInput.addEventListener('change', e => validate());
+        };
+
+        init();
+    </script>
+</body>
+</html>

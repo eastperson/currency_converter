@@ -1,9 +1,9 @@
 package com.wirebarley.api.service;
 
-import com.wirebarley.api.component.currency_layer.client.CurrencyLayerClient;
-import com.wirebarley.api.component.currency_layer.domain.CurrencyLayerResponse;
-import com.wirebarley.api.component.currency_layer.domain.CurrencyType;
-import com.wirebarley.api.exception.CurrencyLayerClientException;
+import com.wirebarley.core.component.currency_layer.client.CurrencyLayerClient;
+import com.wirebarley.core.component.currency_layer.domain.CurrencyLayerResponse;
+import com.wirebarley.core.component.currency_layer.domain.CurrencyType;
+import com.wirebarley.api.exception.CurrencyConvertException;
 import com.wirebarley.api.model.ConvertedResultView;
 import com.wirebarley.api.model.CurrencyConvertRequest;
 import com.wirebarley.core.constant.ResponseCode;
@@ -35,22 +35,40 @@ public class CurrencyConvertService {
         try {
             return currencyLayerResponseCall.execute().body();
         } catch (IOException e) {
-            throw new CurrencyLayerClientException(ResponseCode.INTERNAL_ERROR,"Currency Layer를 호출하는데 문제가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CurrencyConvertException(ResponseCode.INTERNAL_ERROR,"API 호출 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Async
     public CompletableFuture<CurrencyLayerResponse> currentCurrencyAsync(){
-        Call<CurrencyLayerResponse> currencyLayerResponseCall = CurrencyLayerClient.getApiService().getCurrency(
-                currencyLayerProperties.getAccessKey(),
-                CurrencyType.USD.name(),
-                "1",
-                parseCurrencies(CurrencyType.KRW.name(),CurrencyType.JPY.name(),CurrencyType.PHP.name())
-        );
+        return CompletableFuture.completedFuture(currentCurrency());
+    }
+
+    public ConvertedResultView currencyConvert(CurrencyConvertRequest currencyConvertRequest) {
+        CompletableFuture<CurrencyLayerResponse> future = currentCurrencyAsync();
+        while(!future.isDone()){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new CurrencyConvertException(ResponseCode.INTERNAL_ERROR,"API 호출 오류가 발생했습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
         try {
-            return CompletableFuture.completedFuture(currencyLayerResponseCall.execute().body());
-        } catch (IOException e) {
-            throw new CurrencyLayerClientException(ResponseCode.INTERNAL_ERROR,"Currency Layer를 호출하는데 문제가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+            CurrencyLayerResponse currencyLayerResponse = future.get();
+            if(currencyLayerResponse == null || currencyLayerResponse.getSuccess().equals("false")){
+                throw new CurrencyConvertException(ResponseCode.INTERNAL_ERROR,"API 호출 오류가 발생했습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            Double rate = Double.parseDouble(currencyLayerResponse.getQuotes().get(CurrencyType.USD.name().concat(currencyConvertRequest.getType().name())));
+            Double convertedAmount = rate * currencyConvertRequest.getAmount();
+            DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
+            return ConvertedResultView.builder()
+                    .convertedAmount(convertedAmount)
+                    .formattedConvertedAmount(decimalFormat.format(convertedAmount))
+                    .build();
+
+        } catch (InterruptedException | ExecutionException e) {
+            throw new CurrencyConvertException(ResponseCode.INTERNAL_ERROR,"API 호출 오류가 발생했습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -65,30 +83,5 @@ public class CurrencyConvertService {
             paredCurrencies.append(",").append(str);
         }
         return paredCurrencies.toString();
-    }
-
-    public ConvertedResultView currencyConvert(CurrencyConvertRequest currencyConvertRequest) {
-        CompletableFuture<CurrencyLayerResponse> future = currentCurrencyAsync();
-        while(!future.isDone()){
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            CurrencyLayerResponse currencyLayerResponse = future.get();
-
-            Double rate = Double.parseDouble(currencyLayerResponse.getQuotes().get(CurrencyType.USD.name().concat(currencyConvertRequest.getType().name())));
-            Double convertedAmount = rate * currencyConvertRequest.getAmount();
-            DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
-            return ConvertedResultView.builder()
-                    .convertedAmount(convertedAmount)
-                    .formattedConvertedAmount(decimalFormat.format(convertedAmount))
-                    .build();
-
-        } catch (InterruptedException | ExecutionException e) {
-            throw new CurrencyLayerClientException(ResponseCode.INTERNAL_ERROR,"",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }
