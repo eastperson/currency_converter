@@ -55,6 +55,9 @@ public class CurrencyConvertService {
         }
         try {
             CurrencyLayerResponse currencyLayerResponse = future.get();
+            if(currencyLayerResponse == null || currencyLayerResponse.getSuccess().equals("false")){
+                throw new CurrencyConvertException(ResponseCode.INTERNAL_ERROR,"API 호출 오류가 발생했습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
+            }
 
             Double rate = Double.parseDouble(currencyLayerResponse.getQuotes().get(CurrencyType.USD.name().concat(currencyConvertRequest.getType().name())));
             Double convertedAmount = rate * currencyConvertRequest.getAmount();

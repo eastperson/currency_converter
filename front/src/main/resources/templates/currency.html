@@ -17,20 +17,23 @@
             </select>
         </span><br/>
         <span>환율: <span id="currency"></span></span><br/>
-        <span>송금액: <input type="text" id="amount" name="amount">  USD</span><br/>
+        <span>송금액: <input type="text" id="amount" name="amount">  USD </span><span id="validate"></span><br/>
         <button type="submit" id="button">Submit</button>
         <h2 id="convertedAmount"></h2>
     </form>
-    <script>
+    <script th:inline="javascript">
+        const host = [[${host}]];
+        console.log(host);
         let currencyData;
         const currency = document.querySelector("#currency");
         const selectBox = document.querySelector("#currencyType");
         const amountInput = document.querySelector("#amount");
         const submitButton = document.querySelector("#button");
         const convertedAmount = document.querySelector("#convertedAmount");
+        const validateMsg = document.querySelector("#validate");
 
         let getCurrency = async function (){
-            let response = await fetch('http://localhost:8080/currency/current', {
+            let response = await fetch(host + '/currency/current', {
                 method: 'GET'
             });
             return JSON.parse(await response.text());
@@ -47,7 +50,7 @@
             let params = {amount : amount,type : type};
 
             let query = Object.keys(params) .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k])) .join('&');
-            let url = 'http://localhost:8080/currency/convert?' + query;
+            let url = host + '/currency/convert?' + query;
 
             let response = await fetch(url, {
                 method: 'GET'
@@ -57,19 +60,39 @@
 
         let currencyConvertHandler = async e =>{
             e.preventDefault();
-            let result = await currencyConvert();
-            convertedAmount.textContent = result.formattedConvertedAmount + ' ' + selectBox.value;
+            if(!validate()) return;
+            let response = await currencyConvert();
+            if(response.code === '__BAD_REQUEST__' || response.code === '__INTERNAL_ERROR__') {
+                convertedAmount.textContent = response.msg;
+                convertedAmount.style.color = "red"
+            } else {
+                convertedAmount.textContent = response.formattedConvertedAmount + ' ' + selectBox.value;
+                convertedAmount.style.color = "black"
+            }
         };
+
+        let validate = function (){
+            const parsed = parseInt(amountInput.value);
+            if (isNaN(parsed) || parsed < 0 || parsed > 10000){
+                validateMsg.textContent = '송금액이 바르지 않습니다';
+                validateMsg.style.color = 'red';
+                return false;
+            } else {
+                validateMsg.textContent = '✔';
+                validateMsg.style.color = 'green';
+                return true;
+            }
+        }
 
         let init = async function (){
           currencyData = await getCurrency();
           getSelect(currencyData);
           selectBox.addEventListener('change',e => getSelect(currencyData));
           submitButton.addEventListener('click',currencyConvertHandler)
+          amountInput.addEventListener('change', e => validate());
         };
 
         init();
-
     </script>
 </body>
 </html>
