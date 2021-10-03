@@ -1,8 +1,6 @@
 package com.wirebarley.api.web.advice;
 
-import com.wirebarley.api.exception.CurrencyLayerClientException;
-import lombok.Value;
-import org.modelmapper.internal.util.Maps;
+import com.wirebarley.api.exception.CurrencyConvertException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,8 +11,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class CurrencyApiRestAdvice {
 
-    @ExceptionHandler(CurrencyLayerClientException.class)
-    public ResponseEntity<?> handleCurrencyLayerClientException(CurrencyLayerClientException e){
+    @ExceptionHandler(CurrencyConvertException.class)
+    public ResponseEntity<?> handleCurrencyLayerClientException(CurrencyConvertException e){
         return currencyException(e.getCode(),e.getMessage(),e.getHttpStatus());
     }
 
