@@ -106,6 +106,19 @@ response code와 message를 반환하여 응답 코드에 따라 로직을 달�
 
 [Exception (currency_converter/api/src/main/java/com/wirebarley/api/exception/CurrencyConvertException.java )](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/exception/CurrencyConvertException.java)
 
+* CORS 문제
+로컬 테스트를 진행도중 클라이언트의 요청에 CORS 이슈가 발생하였습니다. 이를 해결하기위해 서버가 클라이언트에preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfiguration에서 allowedOrigins와 allowedMethods를 설정했습니다. 
+[WebConfig (currency_converter/api/src/main/java/com/wirebarley/api/config/WebConfig.java )](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/config/WebConfig.java)<br/>
+### 프론트엔드 구성
+
+* polling
+서버에서 currency가 업데이트 되는 주기와 동일하게 서버에 데이터를 요청합니다. 따라서 항상 최신의 currency 데이터 사용할 수 있습니다.
+* Async/Await
+* 유효성 검사
+
+[환율 계산 페이지 (currency_converter/front/src/main/resources/templates/currency.html)](https://github.com/eastperson/currency_converter/blob/master/front/src/main/resources/templates/currency.html)<br/>
+
+
 ### 테스트
 
 테스트는 MockMVC를 활용하여 각 API의 엔드포인트가 확실한 값을 반환하는지를 테스트했습니다.
