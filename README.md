@@ -12,8 +12,10 @@ http://3.36.42.9/api/currency/current
 
 [1차 개발]
 
-Client에서 API를 호출할 때마다 Curreny Layer API를 호출하는 방식. Client 진입시 환율 데이터를 가져오는 서버 API 호출. 환율 계산시 
-통화 코드와 통화량을 파라미터로 서버 API에 송신하여 결과값 반환. 
+Client에서 API를 호출할 때마다 Curreny Layer API를 호출하는 방식.
+
+1. Client 진입시 환율 데이터를 가져오는 서버 API 호출.
+2. 환율 계산시 통화 코드와 통화량을 파라미터로 서버 API에 송신하여 결과값 반환. 
 * API를 호출할 때마다 외부 API를 호출하므로 성능 이슈 발생(응답 시간 700ms ~ 1500ms)
 * 페이지 진입시 확인했던 환율값과 계산에 들어가는 환율값이 요청 시간에 따라 싱크가 맞지 않을 수 있다. 
 
@@ -55,11 +57,11 @@ ui를 보여주는 front로 나누었습니다.
 
 ### 백엔드 구성
 
-* API 호출 Retrofit2 & Scheduler
+* 외부 API 호출 Retrofit2 & Scheduler
 
-통신 성능이 뛰어나고 편의성이 좋은 Retrofit2를 사용하여 Currency Layer API와 통신합니다. 기존에는 서버 api를 호출하면 그때 그때
-외부 API와 통신하도록 비즈니스 로직을 구성했습니다. 하지만 Currency Layer는 회원 등급에 따라 매일, 매분, 매시 각각 다른 정보를
-주고 있었습니다. 무료 서비스는 Daily로 값을 달리하여 일 1회만 값을 저장하면 되었지만, 확장성을 고려하기 위해 매분, 매초에도 정보를
+통신 성능이 뛰어나고 편의성이 좋은 Retrofit2를 사용하여 Currency Layer API와 통신합니다. 1차 개발시 서버 api를 호출되면 그때 그때
+외부 API와 통신하도록 비즈니스 로직을 구성했습니다. 하지만 Currency Layer는 [Subscription Plan](https://currencylayer.com/product)에 따라 매일, 매분, 매시 각각 다른 정보를
+주고 있었습니다. Free 서비스는 Daily로 값을 달리하여 일 1회만 값을 저장하면 되었지만, 확장성을 고려하기 위해 매분, 매초에도 정보를
 가져올 수 있도록 유연하게 구성하고 싶었습니다. 그래서 Scheduler를 활용하여 Polling 방식으로 일정 주기에 따라 api를 요청할 수 있도록
 구성했습니다.
 
@@ -84,9 +86,9 @@ Redis는 속도가 빠르고 데이터의 생명주기를 부여할 수 있어�
 
 * 유효성 검사
 
-테스트 요구사항에서 송금 금액의 유효성 검사를 체크하는 내용을 Validator로 구현했습니다. Dispatcher Servlet에서 Controller로
+코딩 테스트 요구사항에서 송금 금액의 유효성 검사 내용을 Validator로 구현했습니다. Dispatcher Servlet에서 Controller로
 요청 파라미터를 바인딩 할 때, @InitBinder 어노테이션을 사용하여 유효성 검사를 선행합니다. 유효성 검사는 요청들어온 값이 정상적인
-타입(enum,Integer)으로 바인딩이 되었는지와 값의 크기를 확인하였습니다.
+타입(enum,Integer)으로 바인딩이 되었는지와 값의 크기를 확인하였습니다. 검사를 탈락한 데이터는 Exception을 발생시켜 404 에러코드를 반환합니다. 
 
 [Validator (currency_converter/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValidator.java)](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValidator.java) <br/>
 
@@ -122,7 +124,7 @@ preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfigur
 * 유효성 검사
 
 
-[currency page (currency_converter/front/src/main/resources/templates/currency.html)](https://github.com/eastperson/currency_converter/blob/master/front/src/main/resources/templates/currency.html)<br/>
+[환율 계산 페이지 (currency_converter/front/src/main/resources/templates/currency.html)](https://github.com/eastperson/currency_converter/blob/master/front/src/main/resources/templates/currency.html)<br/>
   
 ### 테스트
 
@@ -147,4 +149,4 @@ Redis의 설치를 손쉽게 하기 위해 Docker를 활용했습니다.
 
 * Nginx 구축
 
-client와 server의 포트를 1개의 도메인으로 통합하기 위해 Ngnix를 활용하여 포트 포워딩을 했습니다.
+client와 server의 각각의 포트를 1개의 도메인으로 요청을 받기 위해 Ngnix를 활용하여 포트 포워딩을 했습니다.
