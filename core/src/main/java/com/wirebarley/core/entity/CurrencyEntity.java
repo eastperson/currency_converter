@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import java.util.HashMap;
 
 @Getter
-@RedisHash(value = "currency", timeToLive = 60 * 60 * 24 * 30)
+@RedisHash(value = "currency", timeToLive = 2592000)
 @Builder @ToString @Setter
 public class CurrencyEntity {
 
