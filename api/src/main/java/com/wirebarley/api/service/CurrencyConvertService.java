@@ -38,41 +38,6 @@ public class CurrencyConvertService {
     private static String REDIS_CURRENCY_KEY = "currency_set";
 
     /**
-     * Redis에 저장되어 있는 CurrencyLayerResponse 중
-     * 가장 스코어가 높은(가장 최신의) 데이터 로드
-     * @return
-     */
-    public CurrencyLayerResponse getCurrentCurrency(){
-        ZSetOperations<String, String> stringStringZSetOperations = redisTemplate.opsForZSet();
-
-        Set<String> reverseRange = stringStringZSetOperations.reverseRange(REDIS_CURRENCY_KEY,0,0);
-        String str = (String) reverseRange.toArray()[0];
-        CurrencyLayerResponse currencyLayerResponse = gson.fromJson(str, CurrencyLayerResponse.class);
-        return currencyLayerResponse;
-    }
-
-    /**
-     * amount와 type을 매개변수로 주어졌을 때,
-     * 환율에 맞게 변환
-     * @param currencyConvertRequest
-     * @return
-     */
-    public ConvertedResultView currencyConvert(CurrencyConvertRequest currencyConvertRequest) {
-        CurrencyLayerResponse currencyLayerResponse = getCurrentCurrency();
-        if(currencyLayerResponse == null || currencyLayerResponse.getSuccess().equals("false")){
-            throw new CurrencyConvertException(ResponseCode.INTERNAL_ERROR,"API 호출 오류가 발생했습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        Double rate = Double.parseDouble(currencyLayerResponse.getQuotes().get(CurrencyType.USD.name().concat(currencyConvertRequest.getType().name())));
-        Double convertedAmount = rate * currencyConvertRequest.getAmount();
-        DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
-        return ConvertedResultView.builder()
-                .convertedAmount(convertedAmount)
-                .formattedConvertedAmount(decimalFormat.format(convertedAmount))
-                .build();
-    }
-
-    /**
      * Currency Layer API를 호출하여
      * 현재 currency 정보를 가져온다.
      * @return
@@ -109,6 +74,41 @@ public class CurrencyConvertService {
 
         double score = Double.parseDouble(currencyEntity.getTimestamp());
         stringStringZSetOperations.add(REDIS_CURRENCY_KEY, currencyEntityJson, score);
+    }
+
+    /**
+     * Redis에 저장되어 있는 CurrencyLayerResponse 중
+     * 가장 스코어가 높은(가장 최신의) 데이터 로드
+     * @return
+     */
+    public CurrencyLayerResponse getCurrentCurrency(){
+        ZSetOperations<String, String> stringStringZSetOperations = redisTemplate.opsForZSet();
+
+        Set<String> reverseRange = stringStringZSetOperations.reverseRange(REDIS_CURRENCY_KEY,0,0);
+        String str = (String) reverseRange.toArray()[0];
+        CurrencyLayerResponse currencyLayerResponse = gson.fromJson(str, CurrencyLayerResponse.class);
+        return currencyLayerResponse;
+    }
+
+    /**
+     * amount와 type을 매개변수로 주어졌을 때,
+     * 환율에 맞게 변환
+     * @param currencyConvertRequest
+     * @return
+     */
+    public ConvertedResultView currencyConvert(CurrencyConvertRequest currencyConvertRequest) {
+        CurrencyLayerResponse currencyLayerResponse = getCurrentCurrency();
+        if(currencyLayerResponse == null || currencyLayerResponse.getSuccess().equals("false")){
+            throw new CurrencyConvertException(ResponseCode.INTERNAL_ERROR,"API 호출 오류가 발생했습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        Double rate = Double.parseDouble(currencyLayerResponse.getQuotes().get(CurrencyType.USD.name().concat(currencyConvertRequest.getType().name())));
+        Double convertedAmount = rate * currencyConvertRequest.getAmount();
+        DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
+        return ConvertedResultView.builder()
+                .convertedAmount(convertedAmount)
+                .formattedConvertedAmount(decimalFormat.format(convertedAmount))
+                .build();
     }
 
     /**

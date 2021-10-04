@@ -24,7 +24,7 @@ public class CurrencyScheduler {
     }
 
     /**
-     * 서버 실행시 최초 api 호출
+     * 서버 실행시 api 호출
      */
     @PostConstruct
     public void initMessage() {
