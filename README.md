@@ -135,6 +135,7 @@ preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfigur
 
 ## 3. 배포
 
+<img src="https://user-images.githubusercontent.com/66561524/135820086-beba0309-a38a-4c29-a22e-c1770c4a481d.png"/>
 
 * AWS EC2 배포
 
