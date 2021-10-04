@@ -1,6 +1,5 @@
 package com.wirebarley.front.controller;
 
-import com.wirebarley.core.model.TestView;
 import com.wirebarley.core.properties.CommonProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

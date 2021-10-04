@@ -29,7 +29,7 @@ public class CurrencyConvertRest {
     @CrossOrigin(origins="*")
     @GetMapping("/current")
     public ResponseEntity<?> currentCurrency(){
-        return ResponseEntity.ok(currencyConvertService.currentCurrency());
+        return ResponseEntity.ok(currencyConvertService.getCurrentCurrency());
     }
 
     @CrossOrigin(origins="*")
