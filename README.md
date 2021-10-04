@@ -2,10 +2,10 @@
 
 <a href="https://github.com/wirebarley/apply/blob/master/coding_test.md">문제 소스</a>
 
-클라이언트
+클라이언트<br/>
 http://3.36.42.9/currency
 
-API
+API<br/>
 http://3.36.42.9/api/currency/current
 
 ## 1. 개요
@@ -14,18 +14,18 @@ http://3.36.42.9/api/currency/current
 
 Client에서 API를 호출할 때마다 Curreny Layer API를 호출하는 방식. Client 진입시 환율 데이터를 가져오는 서버 API 호출. 환율 계산시 
 통화 코드와 통화량을 파라미터로 서버 API에 송신하여 결과값 반환. 
-* API를 호출할 때마다 외부 API를 호출하므로 응답 시간 700ms ~ 1500ms
+* API를 호출할 때마다 외부 API를 호출하므로 성능 이슈 발생(응답 시간 700ms ~ 1500ms)
 * 페이지 진입시 확인했던 환율값과 계산에 들어가는 환율값이 요청 시간에 따라 싱크가 맞지 않을 수 있다. 
 
 [2차 개발]
 
-특정 주기로 Currency Layer API를 호출하여 데이터를 DB에 저장하는 방식. 클라이언트에서 데이터를 호출할 때 Redis에서 실시간 데이터를 가져오기
-때문에 성능 개선. 데이터를 업데이트하는 주기를 짧게 가져갈 수 있어 초단위의 실시간 데이터 처리를 위한 확장성에 용이하다고 판단. 
+특정 주기로 Currency Layer API를 호출하여 데이터를 DB에 저장하는 방식. 클라이언트에서 데이터를 호출할 때 Redis에서 실시간 데이터를 가져올 수 있어 성능 개선.
+데이터를 업데이트하는 주기를 짧게 가져갈 수 있어 초단위의 실시간 데이터 처리를 위한 확장성에 용이하다고 판단. 
 
 * Currency Layer API 업데이트 주기에 따라 API를 호출해서 Redis에 저장
-* Redis Sorted Set 자료구조를 사용하여 가장 최신의 데이터를 반환 응답 시간 20ms ~ 100ms
+* Redis Sorted Set 자료구조를 사용하여 가장 최신의 데이터를 반환(응답 시간 20ms ~ 100ms)
 * Client에서 polling 방식으로 서버 API를 호출하여 화면에 있는 값을 서버와 동기화
-* Client에서 최신화되어있는 데이터를 저장하여 환율 계산
+* Client에서 최신화되어있는 데이터를 저장하며 환율 계산하므로 성능 개선
 
 
 DB
@@ -35,10 +35,10 @@ DB
 * Java 11
 * Spring Boot 2.x
 * Spring Data Redis
-* Currency Layer API
 * Retrofit2
 * Scheduler
 * Validation
+* Currency Layer API
 
 프론트엔드
 * Thymeleaf
@@ -65,7 +65,7 @@ ui를 보여주는 front로 나누었습니다.
 
 * 실시간 데이터 처리
   
-초단위로 값이 변경될 수 있는 데이터를 RDBMS에 저장하기는 다소 무겁다는 생각이 들었습니다. 또한 주기에 따라 클라이언트 쪽에서의 요청이 잦아질
+초단위로 값이 변경될 수 있는 데이터를 RDBMS에 저장하기는 무겁다는 생각이 들었습니다. 또한 주기에 따라 클라이언트 쪽에서의 요청이 잦아질
 수 있어 퍼포먼스를 가장 높일 수 있는 DB를 고민했고 실제 웹소켓과 함께 실시간 데이터 처리를 사용하는데 유용하게 쓰이는 Redis를 사용했습니다.
 Redis는 속도가 빠르고 데이터의 생명주기를 부여할 수 있어서 메모리 관리가 유용하다고 생각했습니다.
 
@@ -82,7 +82,7 @@ Redis는 속도가 빠르고 데이터의 생명주기를 부여할 수 있어�
 * 예외 처리
 
 예외처리는 하나의 Exception을 생성하여 RestControllerAdvice로 대응하였습니다. 프론트엔드와 약속된 
-response code와 message를 반환하여 응답 코드에 따라 로직을 달리할 수 있도록 response body를 반환하고 있습니다.
+response code와 message를 반환하여 응답 코드에 따라 로직을 달리할 수 있도록 구성했습니다.
 
 * CORS 문제
 
@@ -111,15 +111,14 @@ preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfigur
 ### 배포
 
 
-
 * AWS EC2 배포
 
-1개의 인스턴스에서 client와 server 모듈 사용
+1개의 인스턴스에서 client와 server 모듈 사용했습니다.
 
 * Docker
 
-Redis의 설치를 손쉽게 구성하기 위해 Docker 활용.
+Redis의 설치를 손쉽게 하기 위해 Docker를 활용했습니다.
 
 * Nginx 구축
 
-1개의 도메인에서 client와 server의 포트를 노출하지 않기 위해 Ngnix를 활용하여 포트 포워딩.
+client와 server의 포트를 1개의 도메인으로 통합하기 위해 Ngnix를 활용하여 포트 포워딩을 했습니다.
