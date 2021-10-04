@@ -77,6 +77,13 @@ UI를 보여주는 front로 나누었습니다.
 초 단위로 값이 변경될 수 있는 데이터를 RDBMS에 저장하기는 무겁다는 생각이 들었습니다. 또한 주기에 따라 클라이언트 쪽에서의 요청이 잦아질
 수 있어 퍼포먼스를 가장 높일 수 있는 DB를 고민했고 실제 웹소켓과 함께 실시간 데이터 처리를 사용하는 데 유용하게 쓰이는 Redis를 사용했습니다.
 
+외부 API 호출은 실패의 가능성이 있어 요청한 시간의 해당하는 데이터가 반드시 저장된다는 보장이 없습니다. 
+따라서 Redis의 Sorted Set을 사용하여 응답 데이터에 포함되어있는 timestamp를 score로 등록하고 성공적으로 응답된 가장 최신의 데이터를 
+불러올 수 있도록 설계했습니다.
+
+[비즈니스 로직 (currency_converter/api/src/main/java/com/wirebarley/api/service/CurrencyConvertService.java )](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/service/CurrencyConvertService.java) <br/>
+
+[Redis Configuration (currency_converter/core/src/main/java/com/wirebarley/core/config/RedisConfig.java)](https://github.com/eastperson/currency_converter/blob/master/core/src/main/java/com/wirebarley/core/config/RedisConfig.java) <br/>
 
 * 유효성 검사
 
