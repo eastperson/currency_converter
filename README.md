@@ -91,7 +91,7 @@ UI를 보여주는 front로 나누었습니다.
 요청 파라미터를 바인딩할 때, @InitBinder 어노테이션을 사용하여 유효성 검사를 선행합니다. 유효성 검사는 요청 들어온 값이 정상적인
 타입(enum,Integer)으로 바인딩이 되었는지와 값의 크기를 확인하였습니다. 검사를 탈락한 데이터는 Exception을 발생 시켜 404 에러 코드를 반환합니다.
 
-[Validator (currency_converter/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValidtor.java)](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValid.java) 
+[Validator (currency_converter/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValidtor.java)](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValidator.java) 
 
 [RestController (currency_converter/api/src/main/java/com/wirebarley/api/web/rest/CurrencyConvertRest.java)](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/web/rest/CurrencyConvertRest.java)
 
