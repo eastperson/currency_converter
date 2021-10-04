@@ -141,11 +141,11 @@ preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfigur
 
 * AWS EC2 배포
 
-1개의 인스턴스에서 client와 server 모듈 사용했습니다.
+1개의 인스턴스에서 멀티 모듈인 client와 server를 구동했습니다.
 
-* Docker
+* Docker & Redis 설치
 
-Redis의 설치를 손쉽게 하기 위해 Docker를 활용했습니다.
+Redis의 설치와 실행을 편리하게 하기 위해 Docker를 활용했습니다.
 
 * Nginx 구축
 
