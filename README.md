@@ -107,7 +107,7 @@ response code와 message를 반환하여 응답 코드에 따라 로직을 달�
 
 * CORS 문제
 
-로컬 테스트를 진행도중 클라이언트의 요청에 CORS 이슈가 발생하였습니다. 이를 해결하기위해 서버가 클라이언트에preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfiguration에서 allowedOrigins와 allowedMethods를 설정했습니다. 
+로컬 테스트 진행 중 클라이언트의 요청에 CORS 이슈가 발생하였습니다. 이를 해결하기위해 서버가 클라이언트에 preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfiguration에서 allowedOrigins와 allowedMethods를 설정했습니다. 
 
 [WebConfig (currency_converter/api/src/main/java/com/wirebarley/api/config/WebConfig.java )](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/config/WebConfig.java)<br/>
 ### 프론트엔드 구성
