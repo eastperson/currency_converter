@@ -10,7 +10,7 @@ http://3.36.42.9/api/currency/current
 
 ## 1. 개요
 
-[1차 개발]
+<strong>[1차 개발]</strong>
 
 Client에서 API를 호출할 때마다 Currency Layer API를 호출하는 방식.
 
@@ -21,7 +21,7 @@ Client에서 API를 호출할 때마다 Currency Layer API를 호출하는 방�
 * API를 호출할 때마다 외부 API를 호출하므로 성능 이슈 발생(응답 시간 700ms~1500ms)
 * 페이지 진입 시 확인했던 환율 값과 계산에 들어가는 환율 값이 요청 시간에 따라 싱크가 맞지 않는 이슈 발생
 
-[2차 개발]
+<strong>[2차 개발]</strong>
 
 서버에서 특정 주기로 Currency Layer API를 호출하여 데이터를 DB에 저장하는 방식. Client에서 서버 API를 호출할 때 Redis에서 실시간 데이터를 반환하여 성능 개선. 데이터를 업데이트하는 주기를 조정할 수 있어 초 단위의 실시간 데이터 처리를 위한 확장성에 용이하다고 판단.
 
