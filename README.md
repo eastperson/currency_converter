@@ -80,8 +80,7 @@ Redis는 속도가 빠르고 데이터의 생명주기를 부여할 수 있어�
 
 [비즈니스 로직 (currency_converter/api/src/main/java/com/wirebarley/api/service/CurrencyConvertService.java )](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/service/CurrencyConvertService.java) <br/>
 
-[Redis Configuration (currency_converter/core/src/main/java/com/wirebarley/core/config/RedisConfig.java)]
-(https://github.com/eastperson/currency_converter/blob/master/core/src/main/java/com/wirebarley/core/config/RedisConfig.java)<br/>
+[Redis Configuration (currency_converter/core/src/main/java/com/wirebarley/core/config/RedisConfig.java)](https://github.com/eastperson/currency_converter/blob/master/core/src/main/java/com/wirebarley/core/config/RedisConfig.java) <br/>
 
 * 유효성 검사
 
@@ -89,11 +88,9 @@ Redis는 속도가 빠르고 데이터의 생명주기를 부여할 수 있어�
 요청 파라미터를 바인딩 할 때, @InitBinder 어노테이션을 사용하여 유효성 검사를 선행합니다. 유효성 검사는 요청들어온 값이 정상적인
 타입(enum,Integer)으로 바인딩이 되었는지와 값의 크기를 확인하였습니다.
 
-[Validator (currency_converter/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValidator.java)]
-(https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValidator.java)<br/>
+[Validator (currency_converter/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValidator.java)](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValidator.java) <br/>
 
-[RestController (currency_converter/api/src/main/java/com/wirebarley/api/web/rest/CurrencyConvertRest.java)]
-(https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/web/rest/CurrencyConvertRest.java)<br/>
+[RestController (currency_converter/api/src/main/java/com/wirebarley/api/web/rest/CurrencyConvertRest.java)](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/web/rest/CurrencyConvertRest.java)<br/>
 
 
 * 예외 처리
@@ -102,19 +99,16 @@ Redis는 속도가 빠르고 데이터의 생명주기를 부여할 수 있어�
 response code와 message를 반환하여 응답 코드에 따라 로직을 달리할 수 있도록 구성했습니다.
 
 
-[RestControllerAdvice (currency_converter/api/src/main/java/com/wirebarley/api/web/advice/CurrencyApiRestAdvice.java )]
-(https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/web/advice/CurrencyApiRestAdvice.java)<br/>
+[RestControllerAdvice (currency_converter/api/src/main/java/com/wirebarley/api/web/advice/CurrencyApiRestAdvice.java )](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/web/advice/CurrencyApiRestAdvice.java)<br/>
 
-[Exception (currency_converter/api/src/main/java/com/wirebarley/api/exception/CurrencyConvertException.java )]
-(https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/exception/CurrencyConvertException.java)<br/>
+[Exception (currency_converter/api/src/main/java/com/wirebarley/api/exception/CurrencyConvertException.java )](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/exception/CurrencyConvertException.java)<br/>
 
 * CORS 문제
 
 로컬 테스트를 진행도중 클라이언트의 요청에 CORS 이슈가 발생하였습니다. 이를 해결하기위해 서버가 클라이언트에
 preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfiguration에서 allowedOrigins와 allowedMethods를 설정했습니다.  
 
-[WebConfig (currency_converter/api/src/main/java/com/wirebarley/api/config/WebConfig.java )]
-(https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/config/WebConfig.java)<br/>
+[WebConfig (currency_converter/api/src/main/java/com/wirebarley/api/config/WebConfig.java )](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/config/WebConfig.java)<br/>
 
 ### 프론트엔드 구성
 
@@ -128,8 +122,7 @@ preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfigur
 * 유효성 검사
 
 
-[currency page (currency_converter/front/src/main/resources/templates/currency.html)]
-(https://github.com/eastperson/currency_converter/blob/master/front/src/main/resources/templates/currency.html)<br/>
+[currency page (currency_converter/front/src/main/resources/templates/currency.html)](https://github.com/eastperson/currency_converter/blob/master/front/src/main/resources/templates/currency.html)<br/>
   
 ### 테스트
 
@@ -138,8 +131,7 @@ preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfigur
 
 성능은 Postman을 활용해서 요청/응답 시간으로 확인했습니다.
 
-[MockMVC 테스트 (currency_converter/api/src/test/java/com/wirebarley/api/rest/CurrencyEntityConvertRestTests.java )]
-(https://github.com/eastperson/currency_converter/blob/master/api/src/test/java/com/wirebarley/api/rest/CurrencyEntityConvertRestTests.java)<br/>
+[MockMVC 테스트 (currency_converter/api/src/test/java/com/wirebarley/api/rest/CurrencyEntityConvertRestTests.java )](https://github.com/eastperson/currency_converter/blob/master/api/src/test/java/com/wirebarley/api/rest/CurrencyEntityConvertRestTests.java)<br/>
 
 ## 3. 배포
 
