@@ -44,7 +44,7 @@ DB
 * Thymeleaf
 * Vanilla JS
 
-## 2. 아키텍쳐
+## 2. 아키텍쳐 및 비즈니스 로직
 
 ### 멀티 모듈 설계
 
@@ -55,13 +55,18 @@ ui를 보여주는 front로 나누었습니다.
 
 ### 백엔드 구성
 
-* API 호출 Retrofit2 & Scheduler & Polling
+* API 호출 Retrofit2 & Scheduler
 
 통신 성능이 뛰어나고 편의성이 좋은 Retrofit2를 사용하여 Currency Layer API와 통신합니다. 기존에는 서버 api를 호출하면 그때 그때
 외부 API와 통신하도록 비즈니스 로직을 구성했습니다. 하지만 Currency Layer는 회원 등급에 따라 매일, 매분, 매시 각각 다른 정보를
 주고 있었습니다. 무료 서비스는 Daily로 값을 달리하여 일 1회만 값을 저장하면 되었지만, 확장성을 고려하기 위해 매분, 매초에도 정보를
 가져올 수 있도록 유연하게 구성하고 싶었습니다. 그래서 Scheduler를 활용하여 Polling 방식으로 일정 주기에 따라 api를 요청할 수 있도록
 구성했습니다.
+
+[Retrofit2 (currency_converter/core/src/main/java/com/wirebarley/core/component/currency_layer)](https://github.com/eastperson/currency_converter/tree/master/core/src/main/java/com/wirebarley/core/component/currency_layer) <br/>
+
+[Scheduler (currency_converter/api/src/main/java/com/wirebarley/api/scheduler/CurrencyScheduler.java)](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/scheduler/CurrencyScheduler.java) <br/>
+
 
 * 실시간 데이터 처리
   
@@ -73,22 +78,43 @@ Redis는 속도가 빠르고 데이터의 생명주기를 부여할 수 있어�
 따라서 Redis의 Sorted Set을 사용하여 응답 데이터에 포함되어있는 timestamp를 score로 등록하고 
 성공적으로 응답된 가장 최신의  데이터를 불러올 수 있도록 설계했습니다.
 
+[비즈니스 로직 (currency_converter/api/src/main/java/com/wirebarley/api/service/CurrencyConvertService.java )](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/service/CurrencyConvertService.java) <br/>
+
+[Redis Configuration (currency_converter/core/src/main/java/com/wirebarley/core/config/RedisConfig.java)]
+(https://github.com/eastperson/currency_converter/blob/master/core/src/main/java/com/wirebarley/core/config/RedisConfig.java)<br/>
+
 * 유효성 검사
 
 테스트 요구사항에서 송금 금액의 유효성 검사를 체크하는 내용을 Validator로 구현했습니다. Dispatcher Servlet에서 Controller로
 요청 파라미터를 바인딩 할 때, @InitBinder 어노테이션을 사용하여 유효성 검사를 선행합니다. 유효성 검사는 요청들어온 값이 정상적인
 타입(enum,Integer)으로 바인딩이 되었는지와 값의 크기를 확인하였습니다.
 
+[Validator (currency_converter/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValidator.java)]
+(https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValidator.java)<br/>
+
+[RestController (currency_converter/api/src/main/java/com/wirebarley/api/web/rest/CurrencyConvertRest.java)]
+(https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/web/rest/CurrencyConvertRest.java)<br/>
+
+
 * 예외 처리
 
 예외처리는 하나의 Exception을 생성하여 RestControllerAdvice로 대응하였습니다. 프론트엔드와 약속된 
 response code와 message를 반환하여 응답 코드에 따라 로직을 달리할 수 있도록 구성했습니다.
+
+
+[RestControllerAdvice (currency_converter/api/src/main/java/com/wirebarley/api/web/advice/CurrencyApiRestAdvice.java )]
+(https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/web/advice/CurrencyApiRestAdvice.java)<br/>
+
+[Exception (currency_converter/api/src/main/java/com/wirebarley/api/exception/CurrencyConvertException.java )]
+(https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/exception/CurrencyConvertException.java)<br/>
 
 * CORS 문제
 
 로컬 테스트를 진행도중 클라이언트의 요청에 CORS 이슈가 발생하였습니다. 이를 해결하기위해 서버가 클라이언트에
 preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfiguration에서 allowedOrigins와 allowedMethods를 설정했습니다.  
 
+[WebConfig (currency_converter/api/src/main/java/com/wirebarley/api/config/WebConfig.java )]
+(https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/config/WebConfig.java)<br/>
 
 ### 프론트엔드 구성
 
@@ -100,6 +126,10 @@ preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfigur
 * Async/Await
 
 * 유효성 검사
+
+
+[currency page (currency_converter/front/src/main/resources/templates/currency.html)]
+(https://github.com/eastperson/currency_converter/blob/master/front/src/main/resources/templates/currency.html)<br/>
   
 ### 테스트
 
@@ -108,7 +138,10 @@ preflight(사전 전달)에 허가 옵션을 반환할 수 있도록 WebConfigur
 
 성능은 Postman을 활용해서 요청/응답 시간으로 확인했습니다.
 
-### 배포
+[MockMVC 테스트 (currency_converter/api/src/test/java/com/wirebarley/api/rest/CurrencyEntityConvertRestTests.java )]
+(https://github.com/eastperson/currency_converter/blob/master/api/src/test/java/com/wirebarley/api/rest/CurrencyEntityConvertRestTests.java)<br/>
+
+## 3. 배포
 
 
 * AWS EC2 배포
