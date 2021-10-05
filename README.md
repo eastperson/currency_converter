@@ -81,7 +81,7 @@ UI를 보여주는 front로 나누었습니다.
 따라서 Redis의 Sorted Set을 사용하여 응답 데이터에 포함되어있는 timestamp를 score로 등록하고 성공적으로 응답된 가장 최신의 데이터를 
 불러올 수 있도록 설계했습니다.
 
-[비즈니스 로직 (currency_converter/api/src/main/java/com/wirebarley/api/service/CurrencyConvertService.java )](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/validation/CurrencyConvertRequestValidator.java) <br/>
+[비즈니스 로직 (currency_converter/api/src/main/java/com/wirebarley/api/service/CurrencyConvertService.java )](https://github.com/eastperson/currency_converter/blob/master/api/src/main/java/com/wirebarley/api/service/CurrencyConvertService.java) <br/>
 
 [Redis Configuration (currency_converter/core/src/main/java/com/wirebarley/core/config/RedisConfig.java)](https://github.com/eastperson/currency_converter/blob/master/core/src/main/java/com/wirebarley/core/config/RedisConfig.java) <br/>
 
