@@ -62,7 +62,7 @@ UI를 보여주는 front로 나누었습니다.
 * 외부 API 호출 Retrofit2 & Scheduler
 
 통신 성능이 뛰어나고 편의성이 좋은 Retrofit2를 사용하여 Currency Layer API와 통신합니다. 1차 개발 시 서버 API를 호출되면 그때그때
-외부 API와 통신하도록 비즈니스 로직을 구성했습니다. 하지만 Currency Layer는 [Subscription Plan](https://currencylayer.com/product)에 따라 매일, 매분, 매시 각각 다른 정보를
+외부 API와 통신하도록 비즈니스 로직을 구성했습니다. 하지만 Currency Layer는 [Subscription Plan](https://currencylayer.com/product)에 따라 매일, 매시, 매분 각각 다른 정보를
 주고 있었습니다. Free 서비스는 Daily로 값을 달리하여서 일 1회만 값을 저장하면 되었지만, 확장성을 고려하기 위해 매분, 매초에도 정보를
 가져올 수 있도록 유연하게 구성하고 싶었습니다. 그래서 Scheduler를 활용하여 Polling 방식으로 일정 주기에 따라 API를 요청할 수 있도록
 구성했습니다.
