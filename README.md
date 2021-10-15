@@ -3,10 +3,10 @@
 <a href="https://github.com/wirebarley/apply/blob/master/coding_test.md">문제 소스</a>
 
 클라이언트<br/>
-http://3.36.42.9/currency
+<strike>http://3.36.42.9/currency</strike>
 
 API<br/>
-http://3.36.42.9/api/currency/current
+<strike>http://3.36.42.9/api/currency/current</strike>
 
 ## 1. 개요
 
